@@ -60,7 +60,6 @@ class DocumentProcessor:
             end = start + self.chunk_size
             chunk = text[start:end]
             
-            # Try to break at sentence boundaries
             if end < text_length:
                 last_period = chunk.rfind('.')
                 last_newline = chunk.rfind('\n')
@@ -86,7 +85,6 @@ class DocumentProcessor:
         Returns:
             List of text chunks
         """
-        # Check file extension
         if file_path.lower().endswith('.pdf'):
             text = self.extract_text_from_pdf(file_path)
         elif file_path.lower().endswith(('.txt', '.md')):

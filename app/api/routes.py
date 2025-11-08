@@ -54,7 +54,6 @@ async def upload_document(
     Accepts PDF, TXT, or MD files
     """
     try:
-        # Validate file type
         allowed_extensions = [".pdf", ".txt", ".md"]
         file_ext = os.path.splitext(file.filename)[1].lower()
         
@@ -64,10 +63,8 @@ async def upload_document(
                 detail=f"File type not supported. Allowed: {', '.join(allowed_extensions)}"
             )
         
-        # Generate unique document ID
         doc_id = str(uuid.uuid4())
         
-        # Save uploaded file
         file_path = UPLOAD_DIR / f"{doc_id}_{file.filename}"
         with open(file_path, "wb") as f:
             content = await file.read()
@@ -75,11 +72,9 @@ async def upload_document(
         
         logger.info(f"Saved file: {file_path}")
         
-        # Process document
         processor: DocumentProcessor = services["processor"]
         chunks = processor.process_file(str(file_path))
         
-        # Index in RAG system
         rag: RAGService = services["rag"]
         chunks_indexed = rag.index_document(
             chunks=chunks,
@@ -114,7 +109,6 @@ async def query_documents(
     try:
         rag: RAGService = services["rag"]
         
-        # Query the RAG system
         answer, sources = rag.query(
             question=request.question,
             top_k=request.top_k
@@ -150,7 +144,6 @@ async def health_check():
                 message="Services not fully initialized"
             )
         
-        # Test Mistral connection by getting collection stats
         stats = rag_service.get_collection_stats()
         
         return HealthCheckResponse(

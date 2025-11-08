@@ -32,13 +32,11 @@ class RAGService:
         self.model_name = model_name
         self.mistral_client = Mistral(api_key=mistral_api_key)
         
-        # Initialize ChromaDB with persistence
         self.chroma_client = chromadb.PersistentClient(
             path=persist_directory,
             settings=Settings(anonymized_telemetry=False)
         )
         
-        # Create or get collection
         self.collection = self.chroma_client.get_or_create_collection(
             name="documents",
             metadata={"description": "Document chunks for RAG"}
@@ -64,10 +62,8 @@ class RAGService:
             Number of chunks indexed
         """
         try:
-            # Generate embeddings for all chunks
             embeddings = self.embedding_service.embed_texts(chunks)
             
-            # Prepare data for ChromaDB
             ids = [f"{document_id}_{i}" for i in range(len(chunks))]
             metadatas = [
                 {
@@ -78,7 +74,6 @@ class RAGService:
                 for i in range(len(chunks))
             ]
             
-            # Add to collection
             self.collection.add(
                 ids=ids,
                 embeddings=embeddings,
@@ -109,10 +104,8 @@ class RAGService:
             Tuple of (answer, source_chunks)
         """
         try:
-            # Generate embedding for the question
             question_embedding = self.embedding_service.embed_text(question)
             
-            # Query vector database
             results = self.collection.query(
                 query_embeddings=[question_embedding],
                 n_results=top_k
@@ -125,7 +118,6 @@ class RAGService:
             source_chunks = results['documents'][0]
             context = "\n\n".join(source_chunks)
             
-            # Generate answer using Mistral AI
             response = self.mistral_client.chat.complete(
                 model=self.model_name,
                 messages=[
