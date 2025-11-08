@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    container_name: mistral-rag-api
+    ports:
+      - "8000:8000"
+    environment:
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - MODEL_NAME=${MODEL_NAME:-mistral-small-latest}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-mistral-embed}
+    volumes:
+      - ./data:/code/data
+      - ./uploads:/code/uploads
+    restart: "no"
