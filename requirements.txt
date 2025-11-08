@@ -1,9 +1,18 @@
+# FastAPI and server
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
+
+# Mistral AI
 mistralai>=1.0.0
+
+# Environment and settings
 python-dotenv==1.0.0
-pydantic==2.5.0
+pydantic>=2.5.0
 pydantic-settings==2.1.0
+
+# Document processing
 pypdf2==3.0.1
-chromadb==0.4.18
 python-multipart==0.0.6
+
+# Vector database - use newer version compatible with Pydantic v2
+chromadb>=0.4.22
