@@ -1,9 +1,15 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
+
 class Settings(BaseSettings):
-    model_config = {"protected_namespaces": ()}
     """Application settings loaded from environment variables"""
+    
+    model_config = {
+        "protected_namespaces": (),
+        "env_file": ".env",
+        "case_sensitive": False
+    }
     
     # Mistral AI Configuration
     mistral_api_key: str
@@ -13,10 +19,7 @@ class Settings(BaseSettings):
     # Application Configuration
     app_name: str = "Mistral Document RAG API"
     debug: bool = False
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+
 
 @lru_cache()
 def get_settings() -> Settings:
